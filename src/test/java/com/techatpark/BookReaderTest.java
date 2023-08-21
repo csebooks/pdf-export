@@ -9,11 +9,11 @@ class BookReaderTest {
     @Test
     void testExtractBook() throws IOException, InterruptedException {
 
-        new BookReader("Database System Concepts",
-                "/home/haripriya/Downloads/Database System Concepts 6th edition.pdf"
+        new BookReader("Web Essentials",
+                "/Users/sathishkumarthiyagarajan/Downloads/Internet-and-world-wide-web-how-to-program-5th-rev-ed-9780132151009-0273764020-9780273764021-0132151006.pdf"
                 )
                 .transformFn(this::transformUsingRegEx)
-                .extract("/home/haripriya/Official/relational-database");
+                .extract("/Users/sathishkumarthiyagarajan/IdeaProjects/web-essentials");
 
     }
 

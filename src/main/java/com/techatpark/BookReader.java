@@ -68,7 +68,7 @@ public class BookReader {
             }
         });
         // creating folders language specific
-        File englishContentFolder = new File(bookRoot, "content.en" + File.separator + bookName.toLowerCase());
+        File englishContentFolder = new File(bookRoot, "content.en");
 
         englishContentFolder.mkdirs();
 
@@ -149,9 +149,9 @@ public class BookReader {
                 for (PDOutlineItem item : outline.children()) {
                     chapterNumber++;
 
-                    String chapterPdfName = "chapter-" + chapterNumber;
+                    String chapterPdfName = item.getTitle();
 
-                    File child = new File(folder, chapterPdfName + ".pdf");
+                    File child = new File(folder, chapterPdfName );
 
                     PDPage currentPage = item.findDestinationPage(pdDocument);
                     startPg = pageTree.indexOf(currentPage);
@@ -169,11 +169,15 @@ public class BookReader {
 
                         PDDocumentInformation info = childDocument.getDocumentInformation();
 
-                        String title = item.getTitle();
+                        String title = item.getTitle().replaceAll(".pdf","");
                         info.setTitle(title);
                         info.setAuthor(getSeoFolderName(title));
+                        try {
+                            childDocument.save(child);
+                        }catch (Exception e) {
+                            System.out.println("Error : " + title);
+                        }
 
-                        childDocument.save(child);
                         childDocument.close();
 
                     }
@@ -239,17 +243,12 @@ public class BookReader {
 
     public String getMarkdown(File chapterPdfFile) throws IOException {
         StringBuilder pdfText = new StringBuilder();
-
-
             try (PDDocument chapterPdfDocument = Loader.loadPDF(chapterPdfFile)) {
                 int pageNumber = chapterPdfDocument.getNumberOfPages();
                 for (int i = 0; i < pageNumber; i++) {
                     pdfText.append(getMarkdown(chapterPdfDocument.getPage(i)));
                 }
             }
-
-
-
         return transformFn == null ? pdfText.toString() : transformFn.apply(pdfText.toString());
     }
 
